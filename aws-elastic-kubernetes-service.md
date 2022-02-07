@@ -242,10 +242,10 @@ webtest      LoadBalancer   10.100.222.89   ab5190278c9ac491cb45a4bc42a6d689-160
 
 
 11. 모든 실습이 끝났고, 더이상 EKS 사용하지 않는다면 아래 명령으로 삭제. 삭제하지 않고 두면???? 넷플릭스 결제했다고 생각합시다.
-
-> $ eksctl delete cluster --name k8s-demo
-
 ```
+$ eksctl delete cluster --name k8s-demo
+
+
 2021-05-21 18:39:08 [ℹ]  eksctl version 0.50.0
 2021-05-21 18:39:08 [ℹ]  using region ap-northeast-2
 2021-05-21 18:39:08 [ℹ]  deleting EKS cluster "k8s-demo"

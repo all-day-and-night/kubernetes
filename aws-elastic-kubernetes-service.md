@@ -12,7 +12,7 @@ aws-elastic-kubernetes-service
   
   > $ sudo ./aws/install
 	
-	>   You can now run: /usr/local/bin/aws --version
+  >   You can now run: /usr/local/bin/aws --version
   
   > $ aws --version
   
@@ -61,7 +61,7 @@ aws-elastic-kubernetes-service
   
   > 태그 추가(Add tags (optional)) - <SKIP>
   
-	> [사용자만들기(Create User)] 버튼 클릭
+  > [사용자만들기(Create User)] 버튼 클릭
   
   > 사용자 생성되면 csv다운로드 -액세스ID/엑세스키
   
@@ -100,6 +100,7 @@ aws-elastic-kubernetes-service
   > 잘 연결되는지 확인
   
   > ubuntu@seongmi_lee:~/.aws$ aws sts get-caller-identity
+	
 ```
   {
       "UserId": "AID...KS26",
@@ -112,19 +113,32 @@ aws-elastic-kubernetes-service
 8. EKS 구성
   
   > 참고: https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/getting-started-eksctl.html
+  
   > EKS요금 시간당 0.01USD  + t3.medium 시간 0.416 *2 USD 입니다.
+  	
   > [Managed nodes – Linux] 탭 선택후 사용설명확인
- > eksctl 명령을 실행해서 Amazon EKS 클러스터를 생성한다.  
+  
+  > eksctl 명령을 실행해서 Amazon EKS 클러스터를 생성한다.  
+  
   > $ eksctl create cluster \
-    > --name k8s-demo \
-    > --region ap-northeast-2 \
-    > --with-oidc \
-    > --ssh-access \
-    > --ssh-public-key aws-login-key \
-    > --nodes 3 \
-    > --node-type t3.medium \
-    > --node-volume-size=20 \
-    > --managed
+    
+  > --name k8s-demo \
+   
+  > --region ap-northeast-2 \
+    
+  > --with-oidc \
+    
+  > --ssh-access \
+    
+  > --ssh-public-key aws-login-key \
+    
+  > --nodes 3 \
+    
+  > --node-type t3.medium \
+    
+  > --node-volume-size=20 \
+    
+  > --managed
     
     > 참고: Amazon Elastic Kubernetes Service(Amazon EKS)에서 OpenID Connect(OIDC) 호환 자격 증명 공급자를 Kubernetes 클러스터에 대한 사용자 인증 옵션으로 사용할 수 있습니다. OIDC 인증을 사용하면 직원 계정의 생성, 활성화 및 비활성화에 대한 조직의 표준 절차를 사용하여 EKS 클러스터에 대한 사용자 액세스를 관리할 수 있습니다. 
     

@@ -4,50 +4,51 @@ aws-elastic-kubernetes-service
 
 2. EKS 관리 시스템(ubuntu Linux)에 AWS CLI 관리툴인 aws
   > 참고: https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2-linux.html
-  > $ sudo apt-get install -y unzip
+  ```
+  $ sudo apt-get install -y unzip
   
-  > $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  $ curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
   
-  > $ unzip awscliv2.zip
+  $ unzip awscliv2.zip
   
-  > $ sudo ./aws/install
+  $ sudo ./aws/install
 	
-  >   You can now run: /usr/local/bin/aws --version
+     You can now run: /usr/local/bin/aws --version
   
-  > $ aws --version
+  $ aws --version
   
-  > aws-cli/2.2.5 Python/3.8.8 Linux/4.4.0-19041-Microsoft exe/x86_64.ubuntu.20 prompt/off
-
+  aws-cli/2.2.5 Python/3.8.8 Linux/4.4.0-19041-Microsoft exe/x86_64.ubuntu.20 prompt/off
+  ```
 
 3. Bastion Host(ubuntu Linux)에 EKS설치/운영 툴인  eksctl 설치
   
   > 참고: https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/eksctl.html
+  ```
+  $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
   
-  > $ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+  $ sudo mv /tmp/eksctl /usr/local/bin
   
-  > $ sudo mv /tmp/eksctl /usr/local/bin
+  $ eksctl version
   
-  > $ eksctl version
-  
-  > 0.50.0
-  
+  0.50.0
+  ```
   
 4. Bastion Host(ubuntu Linux)에 k8s 관리툴인 kubectl 설치
   
   > 참고: https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/install-kubectl.html
+  ```
+  $ curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
   
-  > $ curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+  $ chmod +x ./kubectl
   
-  > $ chmod +x ./kubectl
+  $ mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
   
-  > $ mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+  $ echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
   
-  > $ echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+  $ kubectl version --short --client
   
-  > $ kubectl version --short --client
-  
-  > Client Version: v1.19.6-eks-49a6c0
-  
+  Client Version: v1.19.6-eks-49a6c0
+  ```
   
 5. AWS IAM 생성하기 
   
@@ -68,38 +69,39 @@ aws-elastic-kubernetes-service
   
   
 6. 관리시스템(ubuntu)에서 aws 관리할수 있도록 aws 계정(eks-mng-user) 등록
+  ```
+  $ aws configure
   
-  > $ aws configure
+  AWS Access Key ID [None]: AKIASJ...E37V
   
-  > AWS Access Key ID [None]: AKIASJ...E37V
+  AWS Secret Access Key [None]: XLzhAqt...7g
   
-  > AWS Secret Access Key [None]: XLzhAqt...7g
+  Default region name [None]: ap-northeast-2
   
-  > Default region name [None]: ap-northeast-2
-  
-  > Default output format [None]: <ENTER>
+  Default output format [None]: <ENTER>
 
-  > ubuntu@seongmi_lee:~$ cd .aws/
+  ubuntu@seongmi_lee:~$ cd .aws/
   
-  > ubuntu@seongmi_lee:~/.aws$ ls
+  ubuntu@seongmi_lee:~/.aws$ ls
   
-  > ubuntu@seongmi_lee:~/.aws$ cat config
+  ubuntu@seongmi_lee:~/.aws$ cat config
    
-  > [default]
+  [default]
   
-  > region = ap-northeast-2
+  region = ap-northeast-2
   
-  > ubuntu@seongmi_lee:~/.aws$ cat credentials
+  ubuntu@seongmi_lee:~/.aws$ cat credentials
   
-  > [default]
+  [default]
   
-  > aws_access_key_id = AKIASJ...E37V
+  aws_access_key_id = AKIASJ...E37V
   
-  > aws_secret_access_key = XLzhAq...7g
+  aws_secret_access_key = XLzhAq...7g
 
-  > 잘 연결되는지 확인
+  잘 연결되는지 확인
   
-  > ubuntu@seongmi_lee:~/.aws$ aws sts get-caller-identity
+  ubuntu@seongmi_lee:~/.aws$ aws sts get-caller-identity
+```
 	
 ```
   {

@@ -97,6 +97,24 @@ start aws
 
 ![image](https://user-images.githubusercontent.com/94096054/152727873-39731581-a447-43e6-b2d0-64cc61fc26a4.png)
 
+* 우측 상단의 "Allocate Elastic IP address" 클릭시 
+
+![image](https://user-images.githubusercontent.com/94096054/152733388-818c886e-74b0-4ec6-9c07-7706771f2e1b.png)
+
+> 이러한 페이지를 볼 수 있는데 Allocate를 클릭하면 "Elastic IP"가 생성된다.
+
+* 우측 상단의 "Actions"를 보면 Associate Elastic IP Address가 있다. 
+
+> 클릭하면 다음과 같은 페이지를 볼 수 있다.
+
+![image](https://user-images.githubusercontent.com/94096054/152733570-75c3d5ee-47aa-4e05-97d1-4a579b08c961.png)
+
+> 연결하고자 하는 인스턴스를 선택하여 Associate하면 연결된다.
+
+
+* 인스턴스 Elastic IP 할당 확인
+
+> Instance page로 들어가서 확인해보면 연결한 인스턴스에 Elastic IP가 연결된 것을 볼 수 있다. 
 
 
 

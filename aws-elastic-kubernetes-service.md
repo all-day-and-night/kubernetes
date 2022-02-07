@@ -122,25 +122,26 @@ aws-elastic-kubernetes-service
   
   > eksctl 명령을 실행해서 Amazon EKS 클러스터를 생성한다.  
   
-  > $ eksctl create cluster \
+  ```
+  $ eksctl create cluster \
     
-  > --name k8s-demo \
+  --name k8s-demo \
    
-  > --region ap-northeast-2 \
+  --region ap-northeast-2 \
     
-  > --with-oidc \
+  --with-oidc \
     
-  > --ssh-access \
+  --ssh-access \
     
-  > --ssh-public-key aws-login-key \
+  --ssh-public-key aws-login-key \
     
-  > --nodes 3 \
+  --nodes 3 \
     
-  > --node-type t3.medium \
+  --node-type t3.medium \
     
-  > --node-volume-size=20 \
+  --node-volume-size=20 \
     
-  > --managed
+  --managed
     
     > 참고: Amazon Elastic Kubernetes Service(Amazon EKS)에서 OpenID Connect(OIDC) 호환 자격 증명 공급자를 Kubernetes 클러스터에 대한 사용자 인증 옵션으로 사용할 수 있습니다. OIDC 인증을 사용하면 직원 계정의 생성, 활성화 및 비활성화에 대한 조직의 표준 절차를 사용하여 EKS 클러스터에 대한 사용자 액세스를 관리할 수 있습니다. 
     
@@ -192,24 +193,27 @@ ip-192-168-4-22.ap-northeast-2.compute.internal     Ready    <none>   28m   v1.1
 ip-192-168-82-229.ap-northeast-2.compute.internal   Ready    <none>   28m   v1.19.6-eks-49a6c0
   
   
-  CLI 명령어 완성기능 추가
+* CLI 명령어 완성기능 추가
+```
 $ source <(kubectl completion bash)
 $ echo "source <(kubectl completion bash)" >> ~/.bashrc
-  
+```  
   
   
 10. 간단한 실행 실습
 
+```
 * 워커 노드 정보 보기
 
-> $ kubectl get nodes -o wide
+$ kubectl get nodes -o wide
 
 * Pod 배포 TEST. nginx 컨테이너 5개 실행하고 결과 확인
 
-> $ kubectl create  deployment webtest --image=nginx:1.14 --port=80  --replicas=5
+$ kubectl create  deployment webtest --image=nginx:1.14 --port=80  --replicas=5
 
-> $ kubectl get  pods -o wide
-
+$ kubectl get  pods -o wide
+```
+	
 ```
 NAME                      READY   STATUS    RESTARTS   AGE   IP               NODE                                               NOMINATED NODE   READINESS GATES
 webtest-fdf54587f-8mfrz   1/1     Running   0          28s   192.168.10.139   ip-192-168-2-91.ap-northeast-2.compute.internal    <none>           <none>
@@ -220,9 +224,12 @@ webtest-fdf54587f-pn549   1/1     Running   0          28s   192.168.83.249   ip
 ```
 
 * nginx 웹서버에 클라이언트 접속 가능하도록 구성하고 간단히 TEST
-> $ kubectl expose deployment  webtest --port=80 --type=LoadBalancer
+```
+$ kubectl expose deployment  webtest --port=80 --type=LoadBalancer
 
-> $ kubectl get services
+$ kubectl get services
+``
+	
 ```
 NAME         TYPE           CLUSTER-IP      EXTERNAL-IP                                                                    PORT(S)        AGE
 kubernetes   ClusterIP      10.100.0.1      <none>                                                                         443/TCP        33h

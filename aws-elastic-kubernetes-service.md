@@ -184,14 +184,15 @@ aws-elastic-kubernetes-service
 	- aws에서 확인 :  CloudFormation 검색 후 확인
   ```
   
-  9. 설치완료되면 다음과 같이 설치 결과 확인하고, CLI 명령어 자동완성 기능을 추가
-- kubectl 명령으로 설치결과 확인
+9. 설치완료되면 다음과 같이 설치 결과 확인하고, CLI 명령어 자동완성 기능을 추가
+> kubectl 명령으로 설치결과 확인
+```
 $ kubectl get nodes
 NAME                                                STATUS   ROLES    AGE   VERSION
 ip-192-168-38-198.ap-northeast-2.compute.internal   Ready    <none>   28m   v1.19.6-eks-49a6c0
 ip-192-168-4-22.ap-northeast-2.compute.internal     Ready    <none>   28m   v1.19.6-eks-49a6c0
 ip-192-168-82-229.ap-northeast-2.compute.internal   Ready    <none>   28m   v1.19.6-eks-49a6c0
-  
+```
   
 * CLI 명령어 완성기능 추가
 ```

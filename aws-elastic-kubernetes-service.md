@@ -197,33 +197,46 @@ $ echo "source <(kubectl completion bash)" >> ~/.bashrc
   
   
 10. 간단한 실행 실습
-워커 노드 정보 보기
-$ kubectl get nodes -o wide
 
-Pod 배포 TEST. nginx 컨테이너 5개 실행하고 결과 확인
-$ kubectl create  deployment webtest --image=nginx:1.14 --port=80  --replicas=5
-$ kubectl get  pods -o wide
+* 워커 노드 정보 보기
+
+> $ kubectl get nodes -o wide
+
+* Pod 배포 TEST. nginx 컨테이너 5개 실행하고 결과 확인
+
+> $ kubectl create  deployment webtest --image=nginx:1.14 --port=80  --replicas=5
+
+> $ kubectl get  pods -o wide
+
+```
 NAME                      READY   STATUS    RESTARTS   AGE   IP               NODE                                               NOMINATED NODE   READINESS GATES
 webtest-fdf54587f-8mfrz   1/1     Running   0          28s   192.168.10.139   ip-192-168-2-91.ap-northeast-2.compute.internal    <none>           <none>
 webtest-fdf54587f-d4pjc   1/1     Running   0          28s   192.168.39.104   ip-192-168-56-22.ap-northeast-2.compute.internal   <none>           <none>
 webtest-fdf54587f-dqg55   1/1     Running   0          28s   192.168.13.27    ip-192-168-2-91.ap-northeast-2.compute.internal    <none>           <none>
 webtest-fdf54587f-hs8zd   1/1     Running   0          28s   192.168.77.185   ip-192-168-70-30.ap-northeast-2.compute.internal   <none>           <none>
 webtest-fdf54587f-pn549   1/1     Running   0          28s   192.168.83.249   ip-192-168-70-30.ap-northeast-2.compute.internal   <none>           <none>
+```
 
-nginx 웹서버에 클라이언트 접속 가능하도록 구성하고 간단히 TEST
-$ kubectl expose deployment  webtest --port=80 --type=LoadBalancer
-$ kubectl get services
+* nginx 웹서버에 클라이언트 접속 가능하도록 구성하고 간단히 TEST
+> $ kubectl expose deployment  webtest --port=80 --type=LoadBalancer
+
+> $ kubectl get services
+```
 NAME         TYPE           CLUSTER-IP      EXTERNAL-IP                                                                    PORT(S)        AGE
 kubernetes   ClusterIP      10.100.0.1      <none>                                                                         443/TCP        33h
 webtest      LoadBalancer   10.100.222.89   ab5190278c9ac491cb45a4bc42a6d689-1608401336.ap-northeast-2.elb.amazonaws.com   80:30331/TCP   31s
+```
+* 1분정도 후에 웹브라우저를 통해 웹서버 연결되는지 확인
 
-1분정도 후에 웹브라우저를 통해 웹서버 연결되는지 확인
-http://ab5190278c9ac491cb45a4bc42a6d689-1608401336.ap-northeast-2.elb.amazonaws.com
+> http://ab5190278c9ac491cb45a4bc42a6d689-1608401336.ap-northeast-2.elb.amazonaws.com
 
 
 
 11. 모든 실습이 끝났고, 더이상 EKS 사용하지 않는다면 아래 명령으로 삭제. 삭제하지 않고 두면???? 넷플릭스 결제했다고 생각합시다.
-$ eksctl delete cluster --name k8s-demo
+
+> $ eksctl delete cluster --name k8s-demo
+
+```
 2021-05-21 18:39:08 [ℹ]  eksctl version 0.50.0
 2021-05-21 18:39:08 [ℹ]  using region ap-northeast-2
 2021-05-21 18:39:08 [ℹ]  deleting EKS cluster "k8s-demo"
@@ -236,3 +249,4 @@ $ eksctl delete cluster --name k8s-demo
 2021-05-21 18:42:55 [ℹ]  deleted serviceaccount "kube-system/aws-node"
 2021-05-21 18:42:56 [ℹ]  will delete stack "eksctl-k8s-demo-cluster"
 2021-05-21 18:42:56 [✔]  all cluster resources were deleted
+```

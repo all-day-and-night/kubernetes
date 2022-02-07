@@ -101,9 +101,7 @@ aws-elastic-kubernetes-service
   잘 연결되는지 확인
   
   ubuntu@seongmi_lee:~/.aws$ aws sts get-caller-identity
-```
 	
-```
   {
       "UserId": "AID...KS26",
       "Account": "15..75",
@@ -142,6 +140,7 @@ aws-elastic-kubernetes-service
   --node-volume-size=20 \
     
   --managed
+```
     
     > 참고: Amazon Elastic Kubernetes Service(Amazon EKS)에서 OpenID Connect(OIDC) 호환 자격 증명 공급자를 Kubernetes 클러스터에 대한 사용자 인증 옵션으로 사용할 수 있습니다. OIDC 인증을 사용하면 직원 계정의 생성, 활성화 및 비활성화에 대한 조직의 표준 절차를 사용하여 EKS 클러스터에 대한 사용자 액세스를 관리할 수 있습니다. 
     

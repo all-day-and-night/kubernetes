@@ -58,6 +58,15 @@ kubernetes-intro
 
 > pod 생성 
 
+* kubectl create deployment mainui --image=httpd --replicas=3
+
+* kubectl exec [pod] 
+
+* kubectl port-forward [pod] port:port
+
+* kubectl edit deployments.apps [deploy]
+
+
 
 
 

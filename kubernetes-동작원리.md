@@ -78,3 +78,29 @@ kubernetes 동작원리
 > curl이나 postman 등을 사용하여 http request를 보낼 수도 있지만
 
 > 일반적으로 kubectl을 사용하여 요청
+
+2. etcd에 API의 내용 저장
+
+> API Server에 선언형 api로 요청이 들어오면 선언형 api의 특징답게 바로 컨테이너를 생성하라는 명령을 동작시키지 않는다.
+
+> 분산 저장소인 etcd에 들어온 내용을 저장한다.
+
+3. etcd를 감시하던 controller 동작
+
+> controller는 etcd에 내가 담당하고 있는 resource가 들어왔는지를 감시하다가 
+
+> etcd에 자신의 역할에 맞는 내용이 저장되어 있다면 스케줄러에게 동작을 요청
+
+> 쿠버네티스의 비즈니스 로직은 controller에 숨어있다.
+
+4. 스케줄러는 동작
+
+> 스케줄러는 워커노드의 kubelet과 통신
+
+5. kubelet 동장
+
+> kubelet은 노드에 pod 등을 생성
+
+
+
+

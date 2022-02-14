@@ -99,9 +99,11 @@ kubernetes 동작원리
 
 > 스케줄러는 워커노드의 kubelet과 통신
 
-5. kubelet 동장
+5. kubelet 동작
 
 > kubelet은 노드에 pod 등을 생성
+
+
 
 
 

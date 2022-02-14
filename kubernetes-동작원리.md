@@ -34,6 +34,8 @@ kubernetes 동작원리
 
   > 분산 저장소, 안드로이드에서 자주 사용되는 sqlite를 사용하기도 함
 
+  > 선언형 api를 저장하고 controller가 지속적으로 관리 
+
 * Controller Manager
 
   > 쿠버네티스는 선언형 api를 사용

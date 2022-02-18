@@ -246,7 +246,43 @@ spec:
 
 ## init container를 적용한  pod
 
-> 특정 container를 실행하기 전에 init container를 실행하고 실패 시 main container 생성 x
+> 특정 container를 실행하기 전에 init container를 실행하고 실패 시 main container 실행 x
+
+```
+// init-container.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: busybox:1.28
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  initContainers:
+  - name: init-myservice
+    image: busybox:1.28
+    command: ['sh', '-c', "until nslookup myservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+  - name: init-mydb
+    image: busybox:1.28
+    command: ['sh', '-c', "until nslookup mydb.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mydb; sleep 2; done"]
+```
+
+> init Container가 정상 수행시 main container가 실행되는 것을 확인 
+
+* https://kubernetes.io/ko/docs/concepts/workloads/pods/init-containers/
+
+## infra Container(pause) 이해하기
+
+> Pod의 환경을 만들어주는 Container
+
+
+
+
+
 
 
 

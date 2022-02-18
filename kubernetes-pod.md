@@ -82,3 +82,30 @@ spec:
     - "10000"
 ```
 
+## Pod 동작 flow
+
+
+* Pod api 실행시
+
+1. api의 형식이 맞는지 확인
+
+2. etcd에서 Node에 대한 정보를 Controller가 확인
+
+3. Controller에서 api 명령어를 실행하기 위해서 scheduler에 전달
+
+> 이 때까지 Pending 상태
+
+4. 어떤 Node에서 실행할지 scheduler가 정하고 Pod의 api를 선택한 Node에서 실행
+
+> Running 상태
+
+
+
+
+
+
+
+
+
+
+

@@ -100,6 +100,82 @@ spec:
 > Running 상태
 
 
+## 실습
+
+```
+// kubenetes pods 확인 
+kubectl get pods -o wide --watch
+
+// 실행중인 pods 전체 삭제
+kubectl delete pod --all
+
+
+// nginx image pod 실행
+kubectl create -f pod-nginx.yaml
+
+// 특정 pod 삭제
+kubectl delete pod pod-nginx
+
+// pod 수정
+kubectl edit pod pod-nginx
+
+
+```
+
+* 컨테이너 image 'redis123'을 실행하는 pod 'redis'를 redis.yaml을 이용해 생성하시오 
+
+```
+kubectl run redis --image=redis123 --dry-run -o yaml > redis.yaml
+
+kubectl create -f redis.yaml
+```
+
+> trouble shooting
+
+```
+kubetcl describe pod redis
+
+// 정보확인
+//image redis123은 없기 때문에 수정해서 사용
+//또는 image 가져오기
+```
+
+
+
+## livenessProbe를 이용해 self-healing Pod
+
+> kubelet으로 컨테이너 진단(건강검진)
+
+```
+// Pod definition
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.14
+    
+// livenessProbe 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.14
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+        
+// http get method, 80포트로 건강검진(?)
+```
+
 
 
 

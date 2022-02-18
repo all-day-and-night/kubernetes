@@ -176,6 +176,49 @@ spec:
 // http get method, 80포트로 건강검진(?)
 ```
 
+* 검진 방식
+
+1. httpGet
+
+> 200값이 아니면(정상작동이 아니면) 오류, 컨테이너를 다시 시작
+
+> web Servive를 사용한다면, 어떤 프레임워크나 언어를 사용하든지 상관없이 사용할 수 있다. 
+
+2. tcpSocket
+
+> 지정된 포트에 tcp 연결 시도, 연결되지 않으면 컨테이너 다시 시작
+
+```
+livenessProbe:
+      tcpSocket:
+        port: 8080
+```
+
+3. exec
+
+> exec 명령을 전달하고 명령의 종료 코드가 0이 아니면 컨테이너를 다시 시작한다.
+
+```
+livenessProbe:
+      exec:
+        - ls
+        - /data/file
+```
+
+* liveness probe 매개변수
+
+1. periodSeconds: health check 반복 실행 시간(초)
+2. initialDelaySeconds: Pod 실행 후 delay할 시간(초)
+3. timeoutSeconds: health check 후 응답을 기다리는 시간(초)
+4. failureThreshold: threshold 횟수 이상 실패 시 컨테이너를 죽이고 새로 컨테이너를 생성
+
+
+
+
+
+
+
+
 
 
 

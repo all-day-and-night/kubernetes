@@ -214,6 +214,43 @@ livenessProbe:
 
 
 
+## 실습
+
+```
+// yaml file
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-exam
+spec:
+  containers:
+  - name: busybox-container
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - ls
+        - /tmp/healthy
+      initialDelaySeconds: 10
+      failureThreshold: 2
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 1
+```
+
+
+## init container를 적용한  pod
+
+> 특정 container를 실행하기 전에 init container를 실행하고 실패 시 main container 생성 x
+
+
+
+
 
 
 

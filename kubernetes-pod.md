@@ -279,6 +279,96 @@ spec:
 
 > Pod의 환경을 만들어주는 Container
 
+> Pod 생성시 pause Container가 자동으로 생성되고 삭제될 때 같이 삭제 
+
+> Pod에 대한 IP, HostName을 관리해주는 Container
+
+
+* 실습
+```
+// Pod 생성 후 Pod가 생성된 Node로 이동
+
+$ kubectl run webserver --image=nginx:1.14 
+
+$ ssh [Node Name]
+
+$ docker ps
+
+// ~~~ 결과 출력
+// nginx 컨테이너가 실행되는 동시에 pause도 같이 생성
+```
+
+## static Pod
+
+> api에 요청을 보내지 않고 Pod 생성
+
+> kubelet demon에 의해 동작되는 Pod
+
+> /etc/kubernetes/mainfests/ 디렉토리에 k8s yaml 파일을 저장시 적용됨
+
+* static pod 디렉토리 구성
+```kuber
+$ vi /var/lib/kubelet/config.yaml
+
+...
+staticPodPath: /etc/kubernetes/manifests
+// 디렉토리를 직접 수정해서 pod 실행 
+```
+
+* 디렉토리 수정시 kubelet 데몬 재실행
+
+```
+systemctl restart kubelet
+```
+
+## Pod에 리소스(CPU, Memory) 할당하기
+
+> 각 Node에 할당된 CPU, Memory를 Pod에 할당(resource를 제한)
+
+> Node에 할당된 모든 resource를 사용할 경우 서버가 죽는 경우가 생김
+
+* Resoursce Requests
+
+> 파드를 실행하기 위한 최소 리소스 양 요청
+
+* Resource Limits
+
+> 파드가 사용할 수 있는 최대 리소스 양을 제한
+
+> Memory limit을 초과해서 사용하는 파드는 종료되며 다시 스케줄링 된다.
+
+* 실습
+
+```
+// pod-nginx-resources.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-resource
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.14
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    resources:
+      requests:
+        cpu: 200m
+        memory: 250Mi
+      limits:
+      cpu: 1
+      memory: 500Mi
+      
+// 1 Mb = 1000Kb
+//   1 Mi = 1024 Kib
+```
+
+
+
+
+
+
 
 
 

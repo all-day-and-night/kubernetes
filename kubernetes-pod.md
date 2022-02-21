@@ -362,6 +362,122 @@ spec:
       
 // 1 Mb = 1000Kb
 //   1 Mi = 1024 Kib
+
+//cpu -> m(milli core)
+
+```
+
+> limit과 request를 적절히 배분해서 사용하는 것이 중요
+
+> pending 상태(scheduler에 들어간 상태)에서 running으로 진행이 되지 않을 수 있음
+
+
+
+
+## Pod의 환경변수 설정하기 
+
+> Pod내의 컨테이너가 실행될 때 필요로 하는 변수
+
+> 컨테이너 제작시 미리 정의
+
+* ex)
+```
+ENV NGINX_VERSION 1.19.2
+ENV NJS_VERSION 0.4.3
+```
+
+> Pod 실행 시 미리 정의된 컨테이너 환경변수를 변경할 수 있다.
+
+
+```
+# pod-nginx-env.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod-env
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:1.14
+    ports:
+    - containerPort: 80
+      protocol:  TCP
+    env:
+    - name: MYVAR
+      value: "testvalue"    
+
+# 생성된 pod에 접속하기
+$ kubectl exec nginx-pod-env -it -- /bin/bash
+
+# 환경변수 출력
+$ env
+```
+
+## Pod 구성 패턴의 종류
+
+* Pod 실행 패턴
+
+1. multi-container Pod
+
+ + Sidecar Pod
+ 
+ > 컨테이너 2가지가 동시에 수행되어야 정상 수행되는 Pod
+ 
+ + Adapter
+ 
+ > 외부의 모니터링 정보를 가져오는 container와 앱을 구동하는 container로 구성
+ 
+ + Ambassador
+
+ > 웹서버가 받은 데이터를 여러 저장소에 분산하여 저장하는 역할을 담당하는 컨테이너를 가짐
+
+
+* Pod 실습
+
+1. static pod 생성
+
+```
+#노드 접속
+#/etc/kubernetes/mainfests에서 yaml파일 생성
+#mydb-node01.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mydb-node01
+spec:
+  containers:
+  - image: redis
+    name: mydb
+```
+
+2. resource 할당, 환경변수 설정, namespace 지정
+
+```
+# product namespace 생성
+$ kubectl create namespace product
+
+#yaml 파일 생성
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myweb
+spec:
+  containers:
+  - image: nginx:1.14
+    name: myweb
+    env:
+      - name: DB
+        value: mydb
+    resources:
+      requests:
+        memory: 500Mi
+        cpu: 200m
+      limits:
+        memory: 1Gi
+        cpu: 1
 ```
 
 

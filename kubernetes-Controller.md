@@ -368,7 +368,17 @@ kubernetes.io/change-cause: version 2.2 -> kubernetes.io/change-cause: version 2
 template의 image 버전 수정 image: httpd:2.2 -> image: httpd:2.4
 
 $ kubectl apply -f dep-lab.yaml
+
+// history 확인
+$ kubectl rollout history 
 ```
+
+
+
+
+
+
+
 
 
 

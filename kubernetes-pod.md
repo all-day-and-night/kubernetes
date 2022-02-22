@@ -6,6 +6,11 @@ POD
 
 > 하나의 애플리케이션 
 
+1. 컨테이너를 실행하는 K8s의 최소 api pod
+2. Pod 동작, livenessProbe를 사용한 self-healing Pod
+3. init Container, infra container(pause)
+4. static pod, Pod에 resource 할당
+5. 환경변수를 이용해 컨테이너에 데이터 전달하기, pod 구성 패턴의 종류
 
 ## POD
 

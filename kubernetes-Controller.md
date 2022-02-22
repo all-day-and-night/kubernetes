@@ -375,6 +375,40 @@ $ kubectl rollout history
 
 
 
+## DaemonSet
+
+> 전체 노드에서 Pod가 한 개씩 실행되도록 보장
+
+> 로그 수입기, 모니터링 에이전트와 같은 프로그램 실행시 적용
+
+> replica의 개수를 지정하지 않아도 된다.(node의 개수만큼 실행되기 때문)
+
+> 추가로 노드를 생성하더라도 자동으로 노드에 pod가 실행된다.
+
+> Rolling update 가능
+
+* DaemonSet definition
+
+```
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-nginx
+spec:
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: webui
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.14   
+```
+
 
 
 

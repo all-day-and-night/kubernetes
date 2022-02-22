@@ -132,7 +132,7 @@ selector:
     component: redis
   matchExpression:
     - {key: tier, operator: In, values: [cache]}
-    - {key: environment, operator: NotIn, value: [dev]}
+    - {key: environment, operator: NotIn, values: [dev]}
 ```
 
 * MatchExpression 연산자
@@ -143,7 +143,7 @@ selector:
   + DoesNotExits: key와 다른 label의 pod를 연결
 
 
-* ReplicaSet
+* ReplicaSet(rs-nginx.yaml)
 
 ```
 apiVersion: apps/v1
@@ -156,7 +156,7 @@ spec:
     matchLabels:
       app: webui
     matchExpressions:
-      - {key: version, operator: In, value: ["1.14]}
+      - {key: version, operator: In, values: ["1.14"]}
   template:
     metadata:
       name: nginx-pod
@@ -169,6 +169,206 @@ spec:
 ```
 
 
+* scale
+
+```
+kubectl scale rs rs-nginx --replicas=2
+```
+
+* Controller만 지우기 
+
+
+```
+$ kubectl delete rs rs-nginx --cascade=false
+// controller만 지우고 controller에 의해 생성된 pod는 유지
+```
+
+* 실습 
+
+1. ReplicaSet을 사용하는 rs-lab.yaml 파일을 생성하고 동작
+
+- labes(name:apache, app:main, rel:stable)를 가지는 httpd:2.2 버전의 pod 2개 운영
+  - rs name: rs-mainui
+  - container: httpd:2.2
+```
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: rs-mainui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+     app: main
+  template:
+    metadata:
+      name: apache
+      labels:
+        app: main
+        rel: stable
+    spec:
+      containers:
+      - image: httpd:2.2
+        name: httpd
+```
+
+## Deployment
+
+> ReplicaSet을 제어하는 부모 역할
+
+> ReplicaSet을 컨트롤해서 Pod 수 조절
+
+> Rolling update & Rolling Back(서비스 중단 없이 application update, Back)
+
+* Deployment definition
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app:webui
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.14
+```
+
+
+* pod name
+
+> deployment - controller - pod
+
+> deploy-nginx-6d4c4cc4b8-kpglg
+
+* Rolling Update
+
+```
+$ kubectl set image deployment <deploy name> <container name>=<new_version_image>
+
+$ kubectl set image deployment deploy-nginx nginx-container=nginx:1.15 --record
+```
+
+* RollBack
+
+```
+// rollout history -> 이전 업데이트 기록 출력
+$ kubectl rollout history deployment <deploy_name>
+$ kubectl rollout undo deploy <deploy_name>
+```
+
+* 실습
+
++ deploy-exam1.yaml
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      labels:
+        app: webui
+    spec:
+      containers:
+      - image: nginx:1.14
+        name: web
+        ports: 
+        - containerPort: 80
+```
+
++ rolling update
+
+```
+// update 기록 저장
+$ kubectl create -f deploy-exam1.yaml --record
+
+// update
+$ kubectl set image deployment app-deploy web=nginx:1.15 --record
+
+// update 상태 출력
+$ kubectl rollout status deployment app-deploy
+
+// 업데이트 일시정지
+$ kubectl rollout pause deployment app-deploy
+
+// 업데이트 재시작
+$ kubectl rollout resume deployment app-deploy
+
+// update 기록 출력
+$ kubectl rollout history deployment app-deploy
+
+// 업데이트 롤백(바로 전단계)
+$ kubectl rollout undo deployment app-deploy
+
+
+// 업데이트 롤백(revision 선택)
+$ kubectl rollout undo deployment app-deploy --to-revision=3
+
+```
+
+* yaml file을 수정해서 rolling update
+
+```
+# dep-lab.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: dep-ui
+  annotations:
+    kubernetes.io/change-cause: version 2.2
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  replicas: 2
+  selector:
+    matchLabels:
+      app: main
+  template:
+    metadata:
+      labels:
+        name: apache
+        app: main
+        rel: stable
+    spec:
+      containers:
+      - name: web
+        image: httpd:2.2
+        ports:
+        - containerPort: 80
+```
+
+```
+//create가 아니라 apply 명령어로 실행
+$ kubectl apply -f dep-lab.yaml
+
+// vim 또는 파일에 접근해서 image 버전 수정
+
+kubernetes.io/change-cause: version 2.2 -> kubernetes.io/change-cause: version 2.4
+
+template의 image 버전 수정 image: httpd:2.2 -> image: httpd:2.4
+
+$ kubectl apply -f dep-lab.yaml
+```
 
 
 

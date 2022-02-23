@@ -12,12 +12,25 @@ $ kubectl create deployment webui --image=nginx --replicas=3
 
 
 1. ReplicationController
+> pod 개수 보장 컨트롤러
+
 2. ReplicaSet
+> Replication Controller + 풍부한 Label 지원 
+
 3. Deployment
+> ReplicaSet 제어(Rolling update/ Roll back)
+
 4. DaemodSet
+> Node 하나당 1개씩 pod 실행 보장
+
 5. StatefunSet
+> Pod의 이름 유지
+
 6. Job
+> Pod의 정상적인 종료를 관리
+
 7. CronJob
+> Job을 스케줄링하여 예약 사용 지원
 
 
 ## ReplicationController
@@ -410,19 +423,248 @@ spec:
 ```
 
 
+## StatefulSet
+
+> Pod의 상태를 유지해주는 컨트롤러
+
+> Pod의 이름, Pod의 볼륨(Storage)
+
+* StatefulSet으로 nginx 3개 실행
+
+> 만약 pod하나가 문제가 생긴다면, Pod를 종료하고 이후에 종료된 Pod의 이름을 가진 Pod를 실행한다.
+
+> 이 때, Pod가 생성되는 Node의 위치는 달라질 수 있다.
+
+* StatefulSet definition
+
+```
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sf-nginx
+spec:
+  replicas: 3
+  serviceName: sf-nginx-service
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: webui
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.14
+```
+
+> ServiceName 명시 
+
+* statefulset-exam.yaml
+
+```
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sf-nginx
+spec:
+  replicas: 3
+  serviceName: sf-service
+#  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: webui
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.14
+```
+
+* scale
+
+```
+$ kubectl scale statefulset sf-nginx --replicas=2
+```
+
+* rolling update
+
+```
+$ kubectl edit statefulset sf-nginx 
+```
+
+* rollback
+
+```
+kubectl rollout undo statefulset sf-nginx
+```
+
+* rollback (revision 선택)
+
+```
+kubectl rollout undo statefulset sf-nginx --to-revision=[revision number]
+```
+
+
+## Job Controller
+
+* 쿠버네티스는 pod를 running 중인 상태로 유지
+* Batch 처리하는 Pod는 작업이 완료되면 종료됨
+* Batch 처리에 적합한 컨트롤러로 Pod의 성공적인 완료를 보장
+  + 비정상 종료시 다시 실행
+  + 정상 종료시 완료
+
+* exam
+
+```
+// pod 생성 후 5초 뒤에 제거
+$ kubectl run testpod --image=centos:7 --command sleep 5
+
+// pod의 상태를 확인해보면 pod는 생성 후 5초 뒤에 제거되고
+// 비정상적으로 종료된 Pod를 kubernetes가 다시 생성한다.
+// ...반복
+```
+
+* Job Controller definition
+
+```
+apiVersion: apps/v1
+kind: Job
+metadata:
+  name: job-example
+spec:
+  template:
+    spec:
+      containers:
+      - name: centos-container
+        image: centos:7
+        command: ["bash"]
+        args:
+        - "-c"
+        - "echo 'hello World'; sleep 50; echo 'Bye'"
+      restartPolicy: Never
+```
 
 
 
 
+* job-exam.yaml
 
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-example
+spec:
+#  실행해야 할 job의 수가 몇개인지 지정, replicas와 유사(하지만 palrallelism을 명시하지 않으면 동시에 running되지 않음)
+#  completions: 5
+#  병렬성, 동시 running 되는 pod 수
+#  parallelism: 2
+#  지정 시간 내에 Job을 완료, 그 시간 이전에 종료되지 않으면 강제로 completed로 상태 변환
+#  activeDeadlineSeconds: 15
+  template:
+    spec:
+      containers:
+      - name: centos-container
+        image: centos:7
+        command: ["bash"]
+        args:
+        - "-c"
+        - "echo 'hello World'; sleep 50; echo 'Bye'"
+      restartPolicy: Never
+```
 
+> job에서 지정한 업무를 완료하고 정상 종료된다면 pod는 사라지지 않고 completed 상태로 바뀐다.
 
+## CronJob
 
+> Jon 컨트롤러로 실행할 Application Pod를 주기적으로 반복해서 실행
 
+> Linux의 cronjob의 스케줄링 기능을 Job Controller에 추가한 api
 
+> 다음과 같은 반복해서 실행하는 Job을 운영할 때 사용
 
+  * Data Backup
+  * Send email
+  * Cleaning tasks
 
+* CronJon schedule: "0 9 1 * *" , 매월 1일 9시 정각에 job 실행해줘
+  + Minutes(from 0 to 59)
+  + Hours(from 0 to 23)
+  + Day of the month(from 1 to 31)
+  + Month(from 1 to 12)
+  + Day of the Week(from 0(sun) to 6(sat))
 
+> 매주 일요일 새벽 3시에 job 실행
+
+> "0 3 * * 0"
+
+> 주중에 새벽 3시에 job 실행
+
+> "0 3 * * 1-5"
+
+> 5분마다
+
+> "*/5 * * * *"
+
+> 매일 5분이랑 10분
+
+> "5,10 * * * *"
+
+* CronJob definition
+
+```
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-definition
+spec:
+  schedule: "0 3 1 * *"
+  jobTemplate:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - date; echo hello
+      restartPolicy: Never
+
+```
+
+* cronjob-exam.yaml
+```
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-exam
+spec:
+  schedule: "* * * * *"
+#  startingDeadlineSeconds: 500
+#  Pod 2개 이상 실행 허용
+#  concurrencyPolicy: Allow
+#  허용 x
+#  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            args:
+            - /bin/sh
+            - -c
+            - echo Hello; sleep 10; echo Bye
+          restartPolicy: Never
+```
 
 
 

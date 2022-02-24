@@ -185,7 +185,7 @@ spec:
 * Cluster IP가 없는 서비스로 단일 진입점이 필요없을 때 사용
 * Service와 연결된 Pod의 endPoint로 DNS 레코드가 생성됨
 * Pod의 DNS 주소 : pod-ip-addr.namespace.pod.cluster.local
-
+* StatefulSet과 같이 pod의 이름이 유지되는 서비스에서 사용하는 것이 용이
 
 > Pod들의 endPoint에 DNS resolving Service 지원
 
@@ -210,12 +210,40 @@ spec:
 
 * 실습
 
-* 
+```
+// deployment 배포
+$ kubectl create -f deploy-nginx.yaml
+
+// headless-nginx.yaml 실행
+$ kubectl create -f keadless-nginx.yaml
+
+// service를 조회하면 IP는 None으로 할당
 
 
+```
 
 
+## kube-proxy
 
+* kubernetes service의 백엔드 구현
+* endpoint 연결을 위한 iptables 구성
+* nodePort로의 접근과 Pod 연결을 구현(ipTables 구성)
+
+
+1. userspace
+  * 클라이언트의 서비스 요청을 iptables를 거쳐 kube-proxy가 연결
+  * kubernetes 초기버전에 잠깐 사용
+
+2. iptables
+
+  * default kubernetes networt mode
+  * kube-proxy는 service api 요청 시 iptables rule이 생성
+  * 클라이언트 연결은 kube-proxy가 받아서 iptables 룰을 통해 연결
+ 
+3. IPVS
+  * 리눅스 커널이 지원하는 L4 로드밸런싱 기술을 이용
+  * 별도의 ipvs 지원 모듈을 설정한 후 적용 가능
+  * 지원 알고리즘 : round-robin, least-connection, destination-hashing, sourse-hashing, shortest-expected-delay, next-queue
 
 
 

@@ -179,9 +179,38 @@ spec:
   externalName: google.com
 ```
 
+5. Kubernetes 헤드리스 서비스
 
 
+* Cluster IP가 없는 서비스로 단일 진입점이 필요없을 때 사용
+* Service와 연결된 Pod의 endPoint로 DNS 레코드가 생성됨
+* Pod의 DNS 주소 : pod-ip-addr.namespace.pod.cluster.local
 
+
+> Pod들의 endPoint에 DNS resolving Service 지원
+
+* headless Sevice-definition
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: headless-service
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: webui
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+```
+
+> ClusterIP가 None으로 명시하면 headless Service
+
+* 실습
+
+* 
 
 
 
